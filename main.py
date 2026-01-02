@@ -144,6 +144,30 @@ def add_security_headers(response):
 # ROUTES - URL endpoints
 # ===========================
 
+@app.route('/debug/email-test')
+def debug_email_test():
+    """Debug route to test email configuration"""
+    if app.config.get('FLASK_ENV') != 'production':
+        try:
+            if not app.config.get('MAIL_USERNAME') or not app.config.get('MAIL_PASSWORD'):
+                return {'status': 'error', 'message': 'Email not configured'}
+            
+            # Test email sending
+            msg = Message(
+                subject='Test Email',
+                sender=app.config['MAIL_USERNAME'],
+                recipients=[app.config['MAIL_USERNAME']]
+            )
+            msg.body = 'This is a test email to verify configuration.'
+            
+            mail.send(msg)
+            return {'status': 'success', 'message': 'Test email sent successfully'}
+            
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}
+    else:
+        return {'status': 'disabled', 'message': 'Debug route disabled in production'}
+
 @app.route('/debug')
 def debug_data():
     """Debug route to check database content"""
@@ -465,6 +489,12 @@ def admin_reset_request():
                 flash('Please enter a valid email address.', 'error')
                 return render_template('admin_reset_request.html')
             
+            # Check if email is configured first
+            if not app.config.get('MAIL_USERNAME') or not app.config.get('MAIL_PASSWORD'):
+                app.logger.error('Email not configured - cannot send password reset')
+                flash('Email service is not configured. Password reset is currently unavailable.', 'error')
+                return render_template('admin_reset_request.html')
+            
             admin = db.session.execute(
                 db.select(AdminUser).where(AdminUser.email == email)
             ).scalar()
@@ -473,51 +503,48 @@ def admin_reset_request():
             success_message = 'If an account with that email exists, a reset link has been sent. Please check your email (including spam folder).'
             
             if admin:
-                # Check if email is configured
-                if not app.config.get('MAIL_USERNAME') or not app.config.get('MAIL_PASSWORD'):
-                    app.logger.error('Email not configured - cannot send password reset')
-                    flash('Email service is temporarily unavailable. Please try again later or contact support.', 'error')
-                    return render_template('admin_reset_request.html')
-                
                 try:
+                    # Test email configuration by creating a simple message first
+                    app.logger.info(f'Attempting to send password reset email to {admin.email}')
+                    
                     token = generate_reset_token(admin.email)
                     reset_url = url_for('admin_reset_password', token=token, _external=True)
                     
+                    # Create message with minimal content to avoid encoding issues
                     msg = Message(
-                        subject='Portfolio Admin - Password Reset Request',
+                        subject='Password Reset Request',
                         sender=app.config['MAIL_USERNAME'],
                         recipients=[admin.email]
                     )
                     
-                    msg.body = f'''Hello,
+                    msg.body = f'''Password Reset Request
 
-You have requested to reset your admin password for the Portfolio website.
-
-Click the link below to reset your password:
+Click this link to reset your password:
 {reset_url}
 
-This link will expire in 30 minutes for security reasons.
+This link expires in 30 minutes.
 
-If you did not request this password reset, please ignore this email.
-
-Best regards,
-Portfolio Admin System'''
+If you did not request this, ignore this email.'''
                     
+                    # Send the email
                     mail.send(msg)
-                    app.logger.info(f'Password reset email sent successfully to {admin.email} from {request.remote_addr}')
+                    app.logger.info(f'Password reset email sent successfully to {admin.email}')
                     
                 except Exception as e:
-                    app.logger.error(f'Password reset email failed for {admin.email}: {repr(e)}')
-                    # Still show success message to prevent email enumeration
+                    app.logger.error(f'Password reset email failed for {admin.email}: {str(e)}')
+                    # For debugging, show the actual error in development
+                    if app.config.get('FLASK_ENV') == 'development':
+                        flash(f'Email sending failed: {str(e)}', 'error')
+                        return render_template('admin_reset_request.html')
             else:
-                app.logger.warning(f'Password reset attempted for non-existent email: {email} from {request.remote_addr}')
+                app.logger.warning(f'Password reset attempted for non-existent email: {email}')
             
             flash(success_message, 'info')
             return redirect(url_for('admin_login'))
             
         except Exception as e:
-            app.logger.error(f'Password reset request error: {repr(e)}')
-            flash('An error occurred. Please try again later.', 'error')
+            app.logger.error(f'Password reset request error: {str(e)}')
+            flash(f'An error occurred: {str(e)}', 'error')
             return render_template('admin_reset_request.html')
     
     return render_template('admin_reset_request.html')
