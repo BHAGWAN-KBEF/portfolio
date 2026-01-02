@@ -300,6 +300,7 @@ def contact():
         try:
             clean_message = bleach.clean(message, tags=[], strip=True)
             
+            # Always save to database first
             contact_msg = ContactMessage(
                 name=escape(name), 
                 email=escape(email), 
@@ -308,6 +309,8 @@ def contact():
             db.session.add(contact_msg)
             db.session.commit()
             
+            # Try to send email (optional - don't fail if this doesn't work)
+            email_sent = False
             if app.config['MAIL_USERNAME'] and app.config['MAIL_PASSWORD']:
                 try:
                     msg = Message(
@@ -331,17 +334,24 @@ Sent from: Portfolio Contact Form
                     """
                     
                     mail.send(msg)
+                    email_sent = True
                     app.logger.info(f'Contact form email sent successfully to {app.config["MAIL_USERNAME"]}')
                 except Exception as email_error:
                     app.logger.error(f'Email sending failed: {repr(email_error)}')
+                    # Don't fail the whole process if email fails
             
-            flash(f'Thank you {escape(name)}! Your message has been sent successfully. I\'ll get back to you soon.', 'success')
+            # Success message (message saved regardless of email status)
+            if email_sent:
+                flash(f'Thank you {escape(name)}! Your message has been sent successfully. I\'ll get back to you soon.', 'success')
+            else:
+                flash(f'Thank you {escape(name)}! Your message has been received and saved. I\'ll get back to you soon.', 'success')
+            
             return redirect(url_for('home') + '#contact')
             
         except Exception as e:
             db.session.rollback()
             app.logger.error(f'Contact form error: {repr(e)}')
-            flash('Sorry, there was an error sending your message. Please try again later.', 'error')
+            flash('Sorry, there was an error processing your message. Please try again later.', 'error')
             return redirect(url_for('home') + '#contact')
     
     return redirect(url_for('home') + '#contact')
