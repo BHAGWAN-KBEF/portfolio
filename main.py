@@ -310,17 +310,18 @@ def contact():
             db.session.add(contact_msg)
             db.session.commit()
             
-            # Try to send email (optional)
+            # Try to send email (disabled on production due to SMTP restrictions)
             email_sent = False
-            try:
-                if app.config.get('MAIL_USERNAME') and app.config.get('MAIL_PASSWORD'):
-                    msg = Message(
-                        subject=f"New Contact Form Message from {name}",
-                        sender=app.config['MAIL_USERNAME'],
-                        recipients=[app.config['MAIL_USERNAME']]
-                    )
-                    
-                    msg.body = f"""
+            if os.environ.get('FLASK_ENV') != 'production':
+                try:
+                    if app.config.get('MAIL_USERNAME') and app.config.get('MAIL_PASSWORD'):
+                        msg = Message(
+                            subject=f"New Contact Form Message from {name}",
+                            sender=app.config['MAIL_USERNAME'],
+                            recipients=[app.config['MAIL_USERNAME']]
+                        )
+                        
+                        msg.body = f"""
 New contact form submission:
 
 Name: {name}
@@ -331,14 +332,14 @@ Message:
 
 ---
 Reply to: {email}
-                    """
-                    
-                    mail.send(msg)
-                    email_sent = True
-                    app.logger.info(f'Contact email sent successfully')
-            except Exception as email_error:
-                app.logger.error(f'Email failed: {str(email_error)}')
-                # Don't fail the whole process
+                        """
+                        
+                        mail.send(msg)
+                        email_sent = True
+                        app.logger.info(f'Contact email sent successfully')
+                except Exception as email_error:
+                    app.logger.error(f'Email failed: {str(email_error)}')
+                    # Don't fail the whole process
             
             # Return JSON success response
             if email_sent:
