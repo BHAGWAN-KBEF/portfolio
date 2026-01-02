@@ -438,41 +438,69 @@ def admin_logout():
     return redirect(url_for('home'))
 
 @app.route('/admin/reset-request', methods=['GET', 'POST'])
-@limiter.limit("5 per minute")
+@limiter.limit("3 per minute")  # Stricter rate limiting for password reset
 def admin_reset_request():
-    """Request password reset for admin"""
+    """Request password reset for admin with enhanced email handling"""
     if request.method == 'POST':
-        email = request.form.get('email', '').strip()
+        email = request.form.get('email', '').strip().lower()
         
         if not email:
             flash('Please enter your email address.', 'error')
+            return render_template('admin_reset_request.html')
+        
+        # Email format validation
+        if '@' not in email or '.' not in email or len(email) > 255:
+            flash('Please enter a valid email address.', 'error')
             return render_template('admin_reset_request.html')
         
         admin = db.session.execute(
             db.select(AdminUser).where(AdminUser.email == email)
         ).scalar()
         
+        # Always show success message for security (prevent email enumeration)
+        success_message = 'If an account with that email exists, a reset link has been sent. Please check your email (including spam folder).'
+        
         if admin:
-            token = generate_reset_token(admin.email)
-            reset_url = url_for('admin_reset_password', token=token, _external=True)
+            # Check if email is configured
+            if not app.config['MAIL_USERNAME'] or not app.config['MAIL_PASSWORD']:
+                app.logger.error('Email not configured - cannot send password reset')
+                flash('Email service is not configured. Please contact the administrator.', 'error')
+                return render_template('admin_reset_request.html')
             
             try:
+                token = generate_reset_token(admin.email)
+                reset_url = url_for('admin_reset_password', token=token, _external=True)
+                
                 msg = Message(
-                    'Admin Password Reset Request',
+                    subject='Portfolio Admin - Password Reset Request',
                     sender=app.config['MAIL_USERNAME'],
                     recipients=[admin.email]
                 )
-                msg.body = f'''To reset your admin password, visit the following link:
+                
+                msg.body = f'''Hello,
+
+You have requested to reset your admin password for the Portfolio website.
+
+Click the link below to reset your password:
 {reset_url}
 
-If you did not make this request, ignore this email.
-This link will expire in 30 minutes.'''
+This link will expire in 30 minutes for security reasons.
+
+If you did not request this password reset, please ignore this email.
+
+Best regards,
+Portfolio Admin System'''
                 
                 mail.send(msg)
+                app.logger.info(f'Password reset email sent successfully to {admin.email} from {request.remote_addr}')
+                
             except Exception as e:
-                app.logger.error(f'Password reset email failed: {repr(e)}')
+                app.logger.error(f'Password reset email failed for {admin.email}: {repr(e)}')
+                # Still show success message to prevent email enumeration
+        else:
+            app.logger.warning(f'Password reset attempted for non-existent email: {email} from {request.remote_addr}')
         
-        flash('If an account with that email exists, a reset link has been sent.', 'info')
+        flash(success_message, 'info')
         return redirect(url_for('admin_login'))
     
     return render_template('admin_reset_request.html')
