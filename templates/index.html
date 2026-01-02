@@ -241,6 +241,7 @@ function scrollToAbout() {
 
                 <div class="animate-fade-in-up">
                     <form id="contactForm" method="POST" action="{{ url_for('contact') }}" class="space-y-8">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <div id="messageAlert" class="hidden p-4 rounded-lg mb-4"></div>
                         
                         <div>
@@ -290,9 +291,13 @@ document.getElementById('contactForm').addEventListener('submit', async function
     
     try {
         const formData = new FormData(form);
+        
         const response = await fetch(form.action, {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
         });
         
         const result = await response.json();
@@ -312,6 +317,7 @@ document.getElementById('contactForm').addEventListener('submit', async function
         messageAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
         
     } catch (error) {
+        console.error('Contact form error:', error);
         // Show generic success message even on error
         messageAlert.classList.remove('hidden');
         messageAlert.className = 'p-4 rounded-lg mb-4 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';

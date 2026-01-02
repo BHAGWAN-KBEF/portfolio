@@ -274,7 +274,6 @@ def download_resume():
 
 @app.route('/contact', methods=['GET', 'POST'])
 @limiter.limit("5 per minute")
-@csrf.exempt  # Temporarily disable CSRF for contact form
 def contact():
     """Contact page with working form that sends emails and stores in database"""
     if request.method == 'POST':
