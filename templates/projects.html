@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Projects - Kyei-Baffour Emmanuel Frimpong{% endblock %}
+{% block description %}Complete portfolio of DevOps, AWS Cloud, and Python development projects by Kyei-Baffour Emmanuel Frimpong.{% endblock %}
+
+{% block content %}
+<!-- Projects Header -->
+<section class="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-gray-900 dark:to-blue-900/20">
+    <div class="container mx-auto text-center">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-6 bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
+            All Projects
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+            Comprehensive showcase of my DevOps, AWS Cloud Engineering, and Python development expertise
+        </p>
+        
+        <!-- Project Filter Tabs -->
+        <div class="flex flex-wrap justify-center gap-4">
+            <button class="filter-btn active" data-filter="all">All Projects</button>
+            <button class="filter-btn" data-filter="devops">DevOps Engineering</button>
+            <button class="filter-btn" data-filter="aws">AWS Cloud</button>
+            <button class="filter-btn" data-filter="python">Python Development</button>
+        </div>
+    </div>
+</section>
+
+<!-- All Projects Section -->
+<section class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="container mx-auto">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-grid">
+            {% for project in projects %}
+                <div class="project-card animate-fade-in-up" data-category="{{ project.category }}" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="category-badge category-{{ project.category }}">
+                                {% if project.category == 'devops' %}DevOps{% elif project.category == 'aws' %}AWS Cloud{% else %}Python{% endif %}
+                            </span>
+                            {% if project.demo_url != '#' and project.category == 'python' %}
+                                <span class="text-xs bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 px-2 py-1 rounded-full">Live Demo</span>
+                            {% endif %}
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">
+                            {{ project.title }}
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            {{ project.description }}
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            {% for tech in project.get_technologies() %}
+                                <span class="tech-tag">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="flex gap-4">
+                            <a href="{{ project.github_url }}" class="text-teal-600 dark:text-teal-400 hover:underline" target="_blank">GitHub →</a>
+                            {% if project.demo_url != '#' and project.category == 'python' %}
+                                <a href="{{ project.demo_url }}" class="text-green-600 dark:text-green-400 hover:underline" target="_blank">Demo →</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-16">
+            <a href="{{ url_for('home') }}#contact" class="btn-primary">
+                Let's Work Together
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+// Project filtering functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+            
+            // Update active button
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter projects
+            projectCards.forEach(card => {
+                if (filter === 'all' || card.dataset.category === filter) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeInUp 0.6s ease-out';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+</script>
+
+<style>
+.filter-btn {
+    @apply px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-200;
+}
+
+.filter-btn.active {
+    @apply bg-teal-600 text-white border-teal-600 hover:bg-teal-700;
+}
+
+.category-badge {
+    @apply text-xs font-medium px-2 py-1 rounded-full;
+}
+
+.category-devops {
+    @apply bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300;
+}
+
+.category-aws {
+    @apply bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300;
+}
+
+.category-python {
+    @apply bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300;
+}
+</style>
+{% endblock %}

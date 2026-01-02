@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Kyei-Baffour Emmanuel Frimpong - DevOps & Cloud Engineer Portfolio{% endblock %}</title>
+    <meta name="description" content="{% block description %}Portfolio of Kyei-Baffour Emmanuel Frimpong showcasing expertise in DevOps, AWS Cloud Solutions, and Python Development with professional project implementations.{% endblock %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        border: 'hsl(214.3 31.8% 91.4%)',
+                        input: 'hsl(214.3 31.8% 91.4%)',
+                        ring: 'hsl(221.2 83.2% 53.3%)',
+                        background: 'hsl(0 0% 100%)',
+                        foreground: 'hsl(222.2 84% 4.9%)',
+                        primary: {
+                            DEFAULT: 'hsl(221.2 83.2% 53.3%)',
+                            foreground: 'hsl(210 40% 98%)'
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(210 40% 96.1%)',
+                            foreground: 'hsl(222.2 47.4% 11.2%)'
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s ease-out',
+                        'bounce-slow': 'bounce 2s infinite'
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': {
+                                opacity: '0',
+                                transform: 'translateY(30px)'
+                            },
+                            '100%': {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div id="flash-messages" class="fixed top-20 right-4 z-50 space-y-2">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ 'bg-green-500' if category == 'success' else 'bg-red-500' }} text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300">
+                        <div class="flex items-center justify-between">
+                            <span>{{ message }}</span>
+                            <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% include 'header.html' %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'footer.html' %}
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

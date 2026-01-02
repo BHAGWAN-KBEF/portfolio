@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Experience - Kyei-Baffour Emmanuel Frimpong{% endblock %}
+
+{% block content %}
+<!-- Experience Header -->
+<section class="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-gray-900 dark:to-blue-900/20">
+    <div class="container mx-auto text-center">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-6 bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
+            Professional Experience
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            My journey in DevOps and Cloud Engineering with proven results and achievements
+        </p>
+        <div class="mt-8">
+            <a href="{{ url_for('download_resume') }}" class="btn-primary">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Download Resume
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Timeline -->
+<section class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="container mx-auto max-w-4xl">
+        <div class="space-y-12">
+            {% for exp in experience %}
+                <div class="relative pl-8 border-l-4 border-teal-500">
+                    <div class="absolute -left-3 top-0 w-6 h-6 bg-teal-500 rounded-full border-4 border-white dark:border-gray-900"></div>
+                    <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ exp.title }}</h3>
+                                <p class="text-xl text-teal-600 dark:text-teal-400 font-medium">{{ exp.company }}</p>
+                            </div>
+                            <span class="text-sm bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-300 px-3 py-1 rounded-full">{{ exp.period }}</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6">{{ exp.description }}</p>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-3">Key Achievements:</h4>
+                            <ul class="space-y-2">
+                                {% for achievement in exp.get_achievements() %}
+                                    <li class="flex items-start">
+                                        <svg class="w-5 h-5 text-emerald-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span class="text-gray-600 dark:text-gray-300">{{ achievement }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Certifications -->
+<section class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800/50">
+    <div class="container mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4 bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
+                Certifications & Credentials
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Professional certifications that validate my expertise in cloud technologies and DevOps practices
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for cert in certifications %}
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center transform hover:-translate-y-2 transition-all duration-300">
+                    <div class="w-20 h-20 bg-gradient-to-br from-teal-600 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">{{ cert.name }}</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-2">{{ cert.issuer }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Earned: {{ cert.date }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

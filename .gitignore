@@ -1,0 +1,86 @@
+# Portfolio Website - .gitignore
+# Copyright (c) 2026 Kyei-Baffour Emmanuel Frimpong
+
+# ===========================
+# ENVIRONMENT & SECRETS
+# ===========================
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+config/secrets/
+
+# ===========================
+# PYTHON
+# ===========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+venv/
+env/
+.venv/
+instance/
+*.db
+*.sqlite*
+
+# ===========================
+# FLASK SPECIFIC
+# ===========================
+flask_session/
+*.log
+
+# ===========================
+# SECURITY & SENSITIVE
+# ===========================
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+*.crt
+*.cert
+*.ca-bundle
+config.local.py
+local_settings.py
+secrets.py
+
+# ===========================
+# SYSTEM FILES
+# ===========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===========================
+# EDITORS & IDEs
+# ===========================
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+*.swo
+
+# ===========================
+# DEPLOYMENT
+# ===========================
+.heroku/
+.railway/
+.vercel/
+.netlify/
+
+# ===========================
+# BACKUP & TEMP
+# ===========================
+*.bak
+*.backup
+*.tmp
+*.temp
+*~

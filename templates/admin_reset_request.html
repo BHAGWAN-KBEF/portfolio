@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Reset Password - Admin{% endblock %}
+
+{% block content %}
+<section class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Reset Password</h2>
+            <p class="mt-2 text-gray-600 dark:text-gray-300">Enter your email to receive a reset link</p>
+        </div>
+        
+        <form method="POST" class="mt-8 space-y-6">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Email Address
+                </label>
+                <input type="email" id="email" name="email" required 
+                       class="form-input w-full" placeholder="admin@portfolio.com">
+            </div>
+            
+            <div>
+                <button type="submit" class="btn-primary w-full">
+                    Send Reset Link
+                </button>
+            </div>
+        </form>
+        
+        <div class="text-center">
+            <a href="{{ url_for('admin_login') }}" class="text-gray-600 dark:text-gray-300 hover:underline">
+                ← Back to Login
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

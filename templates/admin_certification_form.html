@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if certification %}Edit{% else %}Add{% endif %} Certification - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">{% if certification %}Edit{% else %}Add{% endif %} Certification</h1>
+            <a href="{{ url_for('admin_dashboard') }}" class="hover:underline">Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-6 max-w-2xl">
+        <div class="bg-white rounded-lg shadow p-6">
+            <form method="POST">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Certification Name</label>
+                    <input type="text" name="name" value="{{ certification.name if certification else '' }}" 
+                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Issuer</label>
+                    <input type="text" name="issuer" value="{{ certification.issuer if certification else '' }}" 
+                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Date</label>
+                    <input type="text" name="date" value="{{ certification.date if certification else '' }}" 
+                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500" 
+                           placeholder="2024" required>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Badge URL</label>
+                    <input type="url" name="badge_url" value="{{ certification.badge_url if certification else '' }}"
+                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                           placeholder="https://example.com/badge">
+                </div>
+
+                <div class="flex gap-4">
+                    <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+                        {% if certification %}Update{% else %}Add{% endif %} Certification
+                    </button>
+                    <a href="{{ url_for('admin_dashboard') }}" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

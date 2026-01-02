@@ -1,0 +1,259 @@
+/* Enhanced animations to match React version */
+.hero-content {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.hero-avatar {
+    animation: scaleIn 0.6s ease-out 0.2s both;
+}
+
+.hero-title {
+    animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+
+.hero-subtitle {
+    animation: fadeInUp 0.6s ease-out 0.6s both;
+}
+
+.hero-description {
+    animation: fadeInUp 0.6s ease-out 0.8s both;
+}
+
+.hero-buttons {
+    animation: fadeInUp 0.6s ease-out 1s both;
+}
+
+.about-header {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.skill-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.skill-card:nth-child(1) { animation-delay: 0.1s; }
+.skill-card:nth-child(2) { animation-delay: 0.2s; }
+.skill-card:nth-child(3) { animation-delay: 0.3s; }
+.skill-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Custom styles for the portfolio */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Navigation styles */
+.nav-link {
+    @apply text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200;
+}
+
+.nav-link:hover {
+    @apply bg-gray-100 dark:bg-gray-800;
+}
+
+/* Button styles */
+.btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5;
+}
+
+.btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 border-2 border-teal-600 text-teal-600 dark:text-teal-400 text-base font-medium rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-300;
+}
+
+/* Skill item styles */
+.skill-item {
+    @apply bg-white dark:bg-gray-800 p-3 rounded-lg text-center text-sm font-medium text-gray-700 dark:text-gray-300 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200;
+}
+
+/* Project card styles */
+.project-card {
+    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700;
+}
+
+/* Technology tag styles */
+.tech-tag {
+    @apply inline-block bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-300 text-xs font-medium px-2.5 py-0.5 rounded-full;
+}
+
+/* Form input styles with enhanced theme support */
+.form-input {
+    @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-300;
+}
+
+/* Ensure form inputs respect theme changes */
+input[type="text"],
+input[type="email"],
+textarea {
+    @apply text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 transition-all duration-300;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+    @apply ring-2 ring-teal-500 border-transparent outline-none;
+}
+
+/* Flash message styles */
+.flash-message {
+    @apply transform translate-x-0 opacity-100;
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Dark mode transitions */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Smooth scrolling for anchor links */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse-slow {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Gradient text animation */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.animate-gradient {
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .nav-link {
+        @apply block px-3 py-2 text-base;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        @apply text-sm px-4 py-2;
+    }
+}
+
+/* Focus styles for accessibility */
+.btn-primary:focus,
+.btn-secondary:focus,
+.form-input:focus {
+    @apply outline-none ring-2 ring-teal-500 ring-offset-2 dark:ring-offset-gray-900;
+}
+
+/* Hover effects */
+.project-card:hover {
+    @apply shadow-2xl;
+}
+
+.skill-item:hover {
+    @apply bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-700 transform scale-105;
+}
+
+/* Loading states */
+.loading {
+    @apply opacity-50 pointer-events-none;
+}
+
+.loading::after {
+    content: '';
+    @apply absolute inset-0 bg-white/50 dark:bg-gray-900/50;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    body {
+        @apply text-black bg-white;
+    }
+    
+    .project-card {
+        @apply border border-gray-300 shadow-none;
+        break-inside: avoid;
+    }
+}

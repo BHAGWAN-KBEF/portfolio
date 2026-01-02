@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - Kyei-Baffour Emmanuel Frimpong{% endblock %}
+
+{% block content %}
+<!-- Blog Header -->
+<section class="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-gray-900 dark:to-blue-900/20">
+    <div class="container mx-auto text-center">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+            Technical Blog
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Insights, tutorials, and thoughts on DevOps, Cloud Engineering, and modern software development
+        </p>
+    </div>
+</section>
+
+<!-- Blog Posts -->
+<section class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="container mx-auto max-w-4xl">
+        {% if posts %}
+            <div class="space-y-8">
+                {% for post in posts %}
+                    <article class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                        <div class="p-8">
+                            <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+                                <time datetime="{{ post.created_at.isoformat() }}">
+                                    {{ post.created_at.strftime('%B %d, %Y') }}
+                                </time>
+                                <span class="mx-2">•</span>
+                                <span>5 min read</span>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                                <a href="{{ url_for('blog_post', slug=post.slug) }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                    {{ post.title }}
+                                </a>
+                            </h2>
+                            <p class="text-gray-600 dark:text-gray-300 mb-6">
+                                {{ post.excerpt or post.content[:200] + '...' }}
+                            </p>
+                            <a href="{{ url_for('blog_post', slug=post.slug) }}" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+                                Read more →
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-16">
+                <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <h3 class="text-xl font-medium text-gray-900 dark:text-gray-100 mb-2">No blog posts yet</h3>
+                <p class="text-gray-600 dark:text-gray-300">Check back soon for technical articles and insights!</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if project %}Edit{% else %}Add{% endif %} Project - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">{% if project %}Edit{% else %}Add{% endif %} Project</h1>
+            <a href="{{ url_for('admin_dashboard') }}" class="hover:underline">Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-6 max-w-2xl">
+        <div class="bg-white rounded-lg shadow p-6">
+            <form method="POST">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Project Title</label>
+                    <input type="text" name="title" value="{{ project.title if project else '' }}" 
+                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Project Description</label>
+                    <textarea name="description" rows="4" 
+                              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500" required>{{ project.description if project else '' }}</textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Technologies (comma-separated)</label>
+                    <input type="text" name="technologies" 
+                           value="{% if project %}{{ project.get_technologies() | join(', ') }}{% endif %}"
+                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500" 
+                           placeholder="Python, Flask, AWS, Docker">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">GitHub URL</label>
+                    <input type="url" name="github_url" value="{{ project.github_url if project else '' }}"
+                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Categories (select all that apply)</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="categories" value="python" 
+                                   {% if project and 'python' in project.get_categories() %}checked{% endif %}
+                                   class="mr-2">
+                            <span>Python Development</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="categories" value="aws" 
+                                   {% if project and 'aws' in project.get_categories() %}checked{% endif %}
+                                   class="mr-2">
+                            <span>AWS Cloud</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="categories" value="devops" 
+                                   {% if project and 'devops' in project.get_categories() %}checked{% endif %}
+                                   class="mr-2">
+                            <span>DevOps</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="flex items-center">
+                        <input type="checkbox" name="has_demo" value="1" 
+                               {% if project and project.has_demo %}checked{% endif %}
+                               class="mr-2" onchange="toggleDemoUrl(this)">
+                        <span class="text-gray-700 text-sm font-bold">This project has a live demo</span>
+                    </label>
+                </div>
+
+                <div class="mb-6" id="demo-url-field" style="{% if not project or not project.has_demo %}display: none;{% endif %}">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Demo URL</label>
+                    <input type="url" name="demo_url" value="{{ project.demo_url if project else '' }}"
+                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                           placeholder="https://your-demo-url.com">
+                </div>
+
+                <div class="flex gap-4">
+                    <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+                        {% if project %}Update{% else %}Add{% endif %} Project
+                    </button>
+                    <a href="{{ url_for('admin_dashboard') }}" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    function toggleDemoUrl(checkbox) {
+        const demoField = document.getElementById('demo-url-field');
+        const demoInput = demoField.querySelector('input');
+        
+        if (checkbox.checked) {
+            demoField.style.display = 'block';
+            demoInput.required = true;
+        } else {
+            demoField.style.display = 'none';
+            demoInput.required = false;
+            demoInput.value = '';
+        }
+    }
+    </script>
+</body>
+</html>
