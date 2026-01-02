@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash
 import json
+import os
 
 db = SQLAlchemy()
 
@@ -116,25 +117,27 @@ class AdminUser(db.Model):
         return f'<AdminUser {self.email}>'
 
 def create_default_admin():
-    """Create default admin user with enhanced security if none exists"""
+    """Create default admin user with secure password from environment if none exists"""
     try:
         if not AdminUser.query.first():
             default_email = "baffouremmanuel1997@gmail.com"
-            default_password = "Admin@2025!Secure"  # Strong default password
+            admin_password = os.environ.get('ADMIN_PASSWORD', 'TempPassword123!')
             
             admin = AdminUser(
                 email=default_email,
                 password=generate_password_hash(
-                    default_password, 
+                    admin_password, 
                     method='pbkdf2:sha256', 
-                    salt_length=16  # Enhanced salt length
+                    salt_length=16
                 )
             )
             db.session.add(admin)
             db.session.commit()
-            print(f"Default admin created: {default_email}")
-            print(f"IMPORTANT: Change default password immediately!")
-            print(f"Default password: {default_password}")
+            print(f"Admin account created: {default_email}")
+            if admin_password == 'TempPassword123!':
+                print("WARNING: Using default password. Set ADMIN_PASSWORD environment variable.")
+            else:
+                print("Admin password configured from environment variable")
     except Exception as e:
         print(f"Error creating default admin: {e}")
 

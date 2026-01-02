@@ -86,12 +86,12 @@ A modern, responsive portfolio website built with Python Flask, featuring databa
 
 ## 🔐 Admin Access
 
-### Default Credentials
+### Admin Login
 - **Email**: `baffouremmanuel1997@gmail.com`
-- **Password**: `Admin@2025!Secure`
 - **URL**: `/admin/login`
+- **Password**: Use the password reset feature at `/admin/reset-request`
 
-⚠️ **IMPORTANT**: Change the default password immediately after first login!
+💡 **Note**: For security reasons, no default password is provided. Use the password reset functionality to set your admin password.
 
 ### Admin Features
 - ✅ **Projects Management** - Add, edit, delete projects with multiple categories
