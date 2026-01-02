@@ -926,6 +926,20 @@ def mark_message_read(message_id):
         app.logger.error(f'Error marking message as read: {repr(e)}')
         flash('Error updating message.', 'error')
     return redirect(url_for('view_messages'))
+
+@app.route('/admin/messages/<int:message_id>/delete', methods=['POST'])
+@admin_required
+def delete_message(message_id):
+    """Delete a contact message"""
+    try:
+        message = db.get_or_404(ContactMessage, message_id)
+        db.session.delete(message)
+        db.session.commit()
+        flash('Message deleted successfully.', 'success')
+    except Exception as e:
+        app.logger.error(f'Error deleting message: {repr(e)}')
+        flash('Error deleting message.', 'error')
+    return redirect(url_for('view_messages'))
 def sitemap():
     """Generate dynamic sitemap for SEO optimization."""
     try:
