@@ -15,5 +15,5 @@ SQLAlchemy==1.4.53
 python-dotenv==1.0.0
 bleach==6.1.0
 
-# PostgreSQL adapter for production only
-psycopg2-binary==2.9.9; sys_platform != "win32"
+# PostgreSQL adapter - compatible with Python 3.13
+psycopg2-binary==2.9.10
