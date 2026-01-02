@@ -240,8 +240,8 @@ function scrollToAbout() {
                 </div>
 
                 <div class="animate-fade-in-up">
-                    <form method="POST" action="{{ url_for('contact') }}" class="space-y-8">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <form id="contactForm" method="POST" action="{{ url_for('contact') }}" class="space-y-8">
+                        <div id="messageAlert" class="hidden p-4 rounded-lg mb-4"></div>
                         
                         <div>
                             <label for="name" class="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Name</label>
@@ -261,8 +261,9 @@ function scrollToAbout() {
                                       class="w-full px-6 py-4 text-lg border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300 resize-vertical" 
                                       required maxlength="1000" minlength="10" placeholder="Tell me about your project or how I can help you..."></textarea>
                         </div>
-                        <button type="submit" class="w-full px-8 py-4 text-lg font-medium rounded-lg text-white bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
-                            Send Message
+                        <button type="submit" id="submitBtn" class="w-full px-8 py-4 text-lg font-medium rounded-lg text-white bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
+                            <span id="submitText">Send Message</span>
+                            <span id="loadingText" class="hidden">Sending...</span>
                         </button>
                     </form>
                 </div>
@@ -270,4 +271,58 @@ function scrollToAbout() {
         </div>
     </div>
 </section>
+
+<script>
+// Contact form handling
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const form = this;
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const loadingText = document.getElementById('loadingText');
+    const messageAlert = document.getElementById('messageAlert');
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    submitText.classList.add('hidden');
+    loadingText.classList.remove('hidden');
+    
+    try {
+        const formData = new FormData(form);
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        // Show message
+        messageAlert.classList.remove('hidden');
+        messageAlert.textContent = result.message;
+        
+        if (result.status === 'success') {
+            messageAlert.className = 'p-4 rounded-lg mb-4 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+            form.reset(); // Clear the form
+        } else {
+            messageAlert.className = 'p-4 rounded-lg mb-4 bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+        }
+        
+        // Scroll to message
+        messageAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+    } catch (error) {
+        // Show generic success message even on error
+        messageAlert.classList.remove('hidden');
+        messageAlert.className = 'p-4 rounded-lg mb-4 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+        messageAlert.textContent = 'Thank you for your message! It has been received and saved.';
+        form.reset();
+    } finally {
+        // Reset button state
+        submitBtn.disabled = false;
+        submitText.classList.remove('hidden');
+        loadingText.classList.add('hidden');
+    }
+});
+</script>
 {% endblock %}

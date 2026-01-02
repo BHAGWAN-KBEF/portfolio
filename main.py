@@ -285,20 +285,16 @@ def contact():
             
             # Basic validation
             if not all([name, email, message]):
-                flash('Please fill in all required fields.', 'error')
-                return redirect(url_for('home') + '#contact')
+                return jsonify({'status': 'error', 'message': 'Please fill in all required fields.'})
             
             if len(name) < 2 or len(name) > 100:
-                flash('Please enter a valid name (2-100 characters).', 'error')
-                return redirect(url_for('home') + '#contact')
+                return jsonify({'status': 'error', 'message': 'Please enter a valid name (2-100 characters).'})
             
             if '@' not in email or '.' not in email or len(email) > 255:
-                flash('Please enter a valid email address.', 'error')
-                return redirect(url_for('home') + '#contact')
+                return jsonify({'status': 'error', 'message': 'Please enter a valid email address.'})
             
             if len(message) < 10 or len(message) > 1000:
-                flash('Message must be between 10-1000 characters.', 'error')
-                return redirect(url_for('home') + '#contact')
+                return jsonify({'status': 'error', 'message': 'Message must be between 10-1000 characters.'})
             
             # Clean message
             try:
@@ -345,13 +341,11 @@ Reply to: {email}
                 app.logger.error(f'Email failed: {str(email_error)}')
                 # Don't fail the whole process
             
-            # Success message
+            # Return JSON success response
             if email_sent:
-                flash(f'Thank you {escape(name)}! Your message has been sent successfully.', 'success')
+                return jsonify({'status': 'success', 'message': f'Thank you {name}! Your message has been sent successfully.'})
             else:
-                flash(f'Thank you {escape(name)}! Your message has been received and saved.', 'success')
-            
-            return redirect(url_for('home') + '#contact')
+                return jsonify({'status': 'success', 'message': f'Thank you {name}! Your message has been received and saved.'})
             
         except Exception as e:
             # Log the full error for debugging
@@ -361,10 +355,10 @@ Reply to: {email}
             except:
                 pass
             
-            # Always show a user-friendly message
-            flash('Thank you for your message! It has been received and saved.', 'success')
-            return redirect(url_for('home') + '#contact')
+            # Always return success to user
+            return jsonify({'status': 'success', 'message': 'Thank you for your message! It has been received and saved.'})
     
+    # For GET requests, redirect to home
     return redirect(url_for('home') + '#contact')
 
 @app.route('/api/health')
