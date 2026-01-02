@@ -53,8 +53,19 @@ database_url = os.environ.get('DATABASE_URL')
 if database_url and database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql+psycopg2://", 1)
 
+# Add SSL configuration for PostgreSQL on Render
+if database_url and 'postgresql' in database_url:
+    if '?' in database_url:
+        database_url += '&sslmode=require'
+    else:
+        database_url += '?sslmode=require'
+
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url or 'sqlite:///portfolio.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,
+    'pool_recycle': 300,
+}
 
 # ===========================
 # SECURITY CONFIGURATION
@@ -904,12 +915,23 @@ def not_found(error):
 
 @app.errorhandler(500)
 def internal_error(error):
-    """Custom 500 error handler."""
+    """Custom 500 error handler with safe fallback."""
     app.logger.error(f'Server Error: {repr(error)}')
-    contact_info = ContactInfo.query.first()
-    return render_template('500.html', 
-                         contact_info=contact_info,
-                         current_year=datetime.now().year), 500
+    try:
+        contact_info = ContactInfo.query.first()
+        return render_template('500.html', 
+                             contact_info=contact_info,
+                             current_year=datetime.now().year), 500
+    except Exception as e:
+        app.logger.error(f'Error handler failed: {repr(e)}')
+        # Fallback to simple HTML response if template fails
+        return '''<!DOCTYPE html>
+<html><head><title>Server Error</title></head>
+<body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+<h1>500 - Server Error</h1>
+<p>Something went wrong. Please try again later.</p>
+<a href="/">Go Home</a>
+</body></html>''', 500
 
 @app.errorhandler(403)
 def forbidden(error):
