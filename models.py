@@ -141,6 +141,34 @@ def create_default_admin():
     except Exception as e:
         print(f"Error creating default admin: {e}")
 
+def force_recreate_admin():
+    """Force recreate admin user with current environment password"""
+    try:
+        # Delete existing admin users
+        AdminUser.query.delete()
+        db.session.commit()
+        
+        # Create new admin with current environment variable
+        default_email = "baffouremmanuel1997@gmail.com"
+        admin_password = os.environ.get('ADMIN_PASSWORD', 'TempPassword123!')
+        
+        admin = AdminUser(
+            email=default_email,
+            password=generate_password_hash(
+                admin_password, 
+                method='pbkdf2:sha256', 
+                salt_length=16
+            )
+        )
+        db.session.add(admin)
+        db.session.commit()
+        print(f"Admin account recreated: {default_email} with password from env: {admin_password != 'TempPassword123!'}")
+        return True
+    except Exception as e:
+        print(f"Error recreating admin: {e}")
+        db.session.rollback()
+        return False
+
 def seed_initial_data():
     """Seed database with initial portfolio data"""
     try:

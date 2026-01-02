@@ -175,14 +175,32 @@ def debug_data():
     certs_count = Certification.query.count()
     exp_count = Experience.query.count()
     skills_count = Skill.query.count()
+    admin_count = AdminUser.query.count()
+    admin_password_env = os.environ.get('ADMIN_PASSWORD', 'NOT_SET')
     
     return {
         'projects': projects_count,
         'certifications': certs_count,
         'experience': exp_count,
         'skills': skills_count,
+        'admin_users': admin_count,
+        'admin_password_configured': admin_password_env != 'NOT_SET',
         'cert_data': [{'name': c.name, 'issuer': c.issuer} for c in Certification.query.all()]
     }
+
+@app.route('/debug/recreate-admin')
+def recreate_admin():
+    """Debug route to recreate admin user"""
+    try:
+        from models import force_recreate_admin
+        success = force_recreate_admin()
+        
+        if success:
+            return {'status': 'success', 'message': 'Admin user recreated with current environment password'}
+        else:
+            return {'status': 'error', 'message': 'Failed to recreate admin user'}
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}
 
 @app.route('/')
 def home():
