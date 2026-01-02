@@ -14,6 +14,14 @@ secrets/
 config/secrets/
 
 # ===========================
+# DEVELOPMENT NOTES (LOCAL ONLY)
+# ===========================
+DEVELOPMENT_NOTES.md
+NOTES.md
+TODO.md
+local_notes.txt
+
+# ===========================
 # PYTHON
 # ===========================
 __pycache__/
