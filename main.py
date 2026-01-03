@@ -914,6 +914,42 @@ def edit_contact_info():
     
     return render_template('admin_contact_form.html', contact_info=contact_info)
 
+# Resume Management
+@app.route('/admin/resume/upload', methods=['GET', 'POST'])
+@admin_required
+def upload_resume():
+    if request.method == 'POST':
+        if 'resume' not in request.files:
+            flash('No file selected.', 'error')
+            return redirect(request.url)
+        
+        file = request.files['resume']
+        if file.filename == '':
+            flash('No file selected.', 'error')
+            return redirect(request.url)
+        
+        if file and file.filename.lower().endswith('.pdf'):
+            import os
+            # Ensure static/documents directory exists
+            upload_dir = os.path.join(app.static_folder, 'documents')
+            os.makedirs(upload_dir, exist_ok=True)
+            
+            # Save with fixed filename
+            file_path = os.path.join(upload_dir, 'Emmanuel_Frimpong_CV.pdf')
+            file.save(file_path)
+            
+            flash('Resume updated successfully!', 'success')
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash('Please upload a PDF file only.', 'error')
+    
+    # Check if resume exists
+    import os
+    resume_path = os.path.join(app.static_folder, 'documents', 'Emmanuel_Frimpong_CV.pdf')
+    resume_exists = os.path.exists(resume_path)
+    
+    return render_template('admin_resume_upload.html', resume_exists=resume_exists)
+
 @app.route('/admin/messages/<int:message_id>/mark-read')
 @admin_required
 def mark_message_read(message_id):

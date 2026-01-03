@@ -190,6 +190,23 @@
             </div>
             {% endif %}
         </div>
+
+        <!-- Resume Management Section -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">Resume Management</h2>
+                <a href="{{ url_for('upload_resume') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Upload New Resume</a>
+            </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600">Current resume file for download</p>
+                    <p class="text-sm text-gray-500 mt-1">File: Emmanuel_Frimpong_CV.pdf</p>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{{ url_for('download_resume') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-sm">Test Download</a>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

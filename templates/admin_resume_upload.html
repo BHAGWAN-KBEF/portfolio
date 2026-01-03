@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resume - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">Upload Resume</h1>
+            <a href="{{ url_for('admin_dashboard') }}" class="hover:underline">Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-6 max-w-2xl">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 p-4 rounded {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-2xl font-bold mb-4">Update Resume</h2>
+            <p class="text-gray-600 mb-6">Upload a new PDF resume to replace the current one. The file will be available for download on your portfolio.</p>
+            
+            <form method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Select Resume (PDF only)</label>
+                    <input type="file" name="resume" accept=".pdf" 
+                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500" required>
+                    <p class="text-sm text-gray-500 mt-2">Maximum file size: 10MB. Only PDF files are allowed.</p>
+                </div>
+
+                <div class="flex gap-4">
+                    <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+                        Upload Resume
+                    </button>
+                    <a href="{{ url_for('admin_dashboard') }}" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">Cancel</a>
+                </div>
+            </form>
+
+            <div class="mt-8 p-4 bg-blue-50 rounded-lg">
+                <h3 class="font-bold text-blue-800 mb-2">Current Resume Status:</h3>
+                <p class="text-blue-700">
+                    {% if resume_exists %}
+                        ✅ Resume file exists and is available for download
+                        <br><a href="{{ url_for('download_resume') }}" class="text-blue-600 hover:underline">Test Download</a>
+                    {% else %}
+                        ❌ No resume file found. Please upload one.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
